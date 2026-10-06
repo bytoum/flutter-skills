@@ -1,0 +1,26 @@
+{
+  "name": "flutter-skills",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "changeset": "changeset",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bytoum/flutter-skills.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/bytoum/flutter-skills/issues"
+  },
+  "homepage": "https://github.com/bytoum/flutter-skills#readme",
+  "devDependencies": {
+    "@changesets/changelog-github": "^1.0.1",
+    "@changesets/cli": "^3.0.3"
+  }
+}

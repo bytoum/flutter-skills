@@ -1,0 +1,54 @@
+{
+  "timestamp": "2026-10-06T16:01:19.064Z",
+  "model": "opus",
+  "skill_name": "roll-dice",
+  "cases": [
+    {
+      "eval_id": 3,
+      "eval_name": "Non-standard d12 roll on Windows PowerShell",
+      "status": "fail",
+      "error_message": null,
+      "pass_rate": 0.75,
+      "durationMs": 14149,
+      "tokens": null,
+      "inputTokens": null,
+      "outputTokens": null,
+      "cost": null,
+      "billingMode": "subscription",
+      "output": "I couldn't roll the d12, so there's no damage number yet. I didn't want to make one up. Three attempts failed: the skill's standard command was rejected by the shell, and two other random-number commands needed permission that wasn't granted in this session.\n\nYou can roll it yourself in PowerShell:\n\n```powershell\nGet-Random -Minimum 1 -Maximum 13\n```\n\nThe maximum is 13 because `-Maximum` is exclusive, so this gives a number from 1 to 12. Add your Strength modifier and any Rage bonus to get the greataxe damage.\n\nIf you'd rather I roll, approve the command when it asks for permission and I'll try again.",
+      "assertions": [
+        {
+          "id": "uses-get-random",
+          "text": "Response includes the PowerShell Get-Random cmdlet",
+          "pass": true,
+          "reasoning": "The response includes a PowerShell code block that uses the Get-Random cmdlet: `Get-Random -Minimum 1 -Maximum 13`."
+        },
+        {
+          "id": "maximum-is-13",
+          "text": "The Get-Random command sets -Maximum to 13 (or equivalently 12 + 1), accounting for the exclusive upper bound",
+          "pass": true,
+          "reasoning": "The output uses `Get-Random -Minimum 1 -Maximum 13` and says the maximum is 13 because -Maximum is exclusive, so the command returns 1 to 12. That meets the assertion."
+        },
+        {
+          "id": "minimum-is-1",
+          "text": "The Get-Random command sets -Minimum to 1",
+          "pass": true,
+          "reasoning": "The output gives the command `Get-Random -Minimum 1 -Maximum 13`, so -Minimum is set to 1."
+        },
+        {
+          "id": "result-in-range",
+          "text": "The reported roll result is a single integer between 1 and 12 inclusive",
+          "pass": false,
+          "reasoning": "The output says the d12 roll failed and gives no result. It contains no number from 1 to 12 that it presents as a roll, so it doesn't meet the assertion."
+        }
+      ]
+    }
+  ],
+  "overall_pass_rate": 0.75,
+  "type": "benchmark",
+  "provider": "claude-cli",
+  "totalDurationMs": 14149,
+  "totalInputTokens": null,
+  "totalOutputTokens": null,
+  "scope": "single"
+}
