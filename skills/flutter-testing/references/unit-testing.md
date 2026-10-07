@@ -43,11 +43,15 @@ indirect coverage of the behavior that will change. Use an existing coverage
 report when available, but do not require one when test code and execution
 establish the answer.
 
-When the behavior is uncovered and testing is in scope, add the smallest
-characterization or regression test by default and, for a bug fix, observe it
-fail before changing the function. No permission is needed for that. Ask only
-when reliable coverage needs a material seam, new dependency, harness, service,
-device, credential, or CI change, and state the options with a recommendation.
+If the behavior is uncovered, pause before changing production code. Explain
+which behavior lacks coverage and ask the user to authorize a path. Recommend a
+focused characterization or regression test first; for a bug fix, observe it
+fail for the reported reason before applying the production change. The user
+may instead authorize proceeding without new coverage, ask to investigate a
+testability seam, or defer the production change. A request to fix the bug is
+not by itself confirmation to bypass this gate. Ask separately before a
+material scope expansion such as a new dependency, service, credential, or CI
+change.
 
 ## Control Dependencies
 
@@ -57,10 +61,10 @@ project's mocking framework. Preserve established Mockito or Mocktail patterns.
 If no framework exists, do not add one merely to avoid a small fake.
 
 Inject unstable boundaries such as HTTP clients, clocks, randomness, storage,
-and platform adapters. Capture time once for a decision and use explicit UTC
-instants when timezone behavior is not under test. For plugin-backed code,
-prefer wrapping the plugin behind an application-owned interface; mock platform
-interfaces or channels only when a higher boundary is unavailable.
+and external adapters. Capture time once for a decision and use explicit UTC
+instants when timezone behavior is not under test. Test application logic
+through its own interface rather than depending on an external service or
+adapter implementation.
 
 When the project uses generated code (Mockito `*.mocks.dart`, `freezed`,
 `json_serializable`, or another generator), change the annotated source and run

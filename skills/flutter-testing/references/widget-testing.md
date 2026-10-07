@@ -4,8 +4,8 @@ Use this workflow to test rendered Flutter widgets with `testWidgets` and
 `flutter_test`, without launching the full app on a device. Choose it over a
 unit test when the behavior needs layout, gestures, focus, semantics, or inherited
 widgets. Choose a [golden test](golden-testing.md) only when pixels are the
-contract, and an [integration test](integration-testing.md) when the behavior
-needs real platform services or a multi-screen journey on a target.
+contract. This workflow covers widget behavior in the test binding, not full-app
+flows on a device or real platform services.
 
 ## Build the Smallest Environment
 

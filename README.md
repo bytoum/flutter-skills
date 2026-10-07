@@ -8,7 +8,7 @@ portable set of instructions stored in its own directory under `skills/`.
 | Skill | Description |
 | --- | --- |
 | [`flutter-analyze`](skills/flutter-analyze/SKILL.md) | Diagnose and resolve Flutter and Dart analyzer findings while preserving intended behavior and the project's analysis policy. |
-| [`flutter-testing`](skills/flutter-testing/SKILL.md) | Create, run, diagnose, review, and stabilize Flutter and Dart unit tests and Flutter application-level integration tests. |
+| [`flutter-testing`](skills/flutter-testing/SKILL.md) | Create, run, diagnose, review, and stabilize Flutter and Dart unit, widget, and golden tests; ask before changing uncovered production behavior. |
 | [`roll-dice`](skills/roll-dice/SKILL.md) | Generate random dice rolls with shell or PowerShell commands. |
 
 ## Install a skill
@@ -46,6 +46,25 @@ also invoke one explicitly by referencing its name with a `$` prefix:
 ```text
 Use $flutter-analyze to run the analyzer and fix its findings.
 ```
+
+### Flutter Testing example
+
+Ask the skill to add a widget test and run it, while preserving the confirmation
+gate for uncovered production behavior:
+
+```text
+Use $flutter-testing to add a widget test for LoginForm and run it. If the
+behavior is uncovered, ask me which path to take before changing production code.
+```
+
+In a project that uses FVM, a focused test command might be:
+
+```bash
+fvm flutter test test/path/to/example_test.dart
+```
+
+Use the wrapper and test command configured by the project; this example is not
+universal.
 
 ## Repository structure
 

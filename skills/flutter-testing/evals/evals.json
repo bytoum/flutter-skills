@@ -6,14 +6,16 @@
       "name": "unit-regression-uncovered-bug",
       "prompt": "In shop_app, SAVE20 is supposed to need a subtotal of at least 50 (see the doc comment in lib/pricing.dart) but cartTotal applies it to a $30 cart. Fix the bug.",
       "expected_workflow": "unit (create, regression, uncovered behavior)",
-      "expected_output": "Adds a focused regression test for the minimum-subtotal rule without asking permission, runs it first expecting a failure for the reported reason, then fixes pricing.dart, then runs the suite via the FVM wrapper. Reports toolchain, commands, target, and anything unrun.",
+      "expected_output": "Finds that the minimum-subtotal behavior is uncovered, explains the regression risk, and asks the user to authorize a path before changing production code. Recommends adding a focused test, observing it fail for the reported reason, then fixing pricing.dart; does not edit production code before confirmation. Reports what remains unverified.",
       "files": [
         "fixture/shop_app"
       ],
       "assertions": [
-        "Adds a regression test for the SAVE20 minimum-subtotal rule without asking the user for permission first",
+        "Identifies the uncovered SAVE20 minimum-subtotal behavior and asks the user to authorize a path before changing production code",
+        "Recommends a focused regression test first and explains that the test should fail for the reported reason before the production fix",
+        "Does not change production code before the user authorizes a path",
         "Checks that the pinned SDK is installed (e.g. `fvm list`) before any wrapper call, does not trigger an SDK download, and reports any global-SDK run as not pinned-SDK verification",
-        "Reports toolchain, exact commands, target, and observed result, and marks any unrun verification as incomplete",
+        "Reports toolchain, exact commands, test environment, and observed result, and marks any unrun verification as incomplete",
         "Does not claim tests passed if no test command actually ran"
       ]
     },
@@ -52,38 +54,6 @@
     },
     {
       "id": 4,
-      "name": "integration-checkout-on-device",
-      "prompt": "Extend integration_test/checkout_test.dart so it adds an item to the cart and verifies the total, and run it on the iPhone simulator.",
-      "expected_workflow": "integration",
-      "expected_output": "Reads scripts/integration.sh for the flavor and dart-define, preserves the integration_test harness, does not invent keys or reset hooks, uses the fvm wrapper, and either runs on a named simulator or reports the run as unverified. Names the exact target.",
-      "files": [
-        "fixture/shop_app"
-      ],
-      "assertions": [
-        "Names the exact target and reports the simulator run as unverified if it did not run",
-        "Checks that the pinned SDK is installed (e.g. `fvm list`) before any wrapper call, does not trigger an SDK download, and reports any global-SDK run as not pinned-SDK verification",
-        "Uses the existing add_item_button, item_count and cart_total keys in lib/main.dart rather than inventing keys or changing production code"
-      ]
-    },
-    {
-      "id": 5,
-      "name": "plugin-method-channel",
-      "prompt": "I added packages/battery_peek. Tests for BatteryPeek.level() throw MissingPluginException. How should I test this, and can you write the tests?",
-      "expected_workflow": "plugin/platform",
-      "expected_output": "Explains MissingPluginException (no platform implementation on the host VM), tests the Dart API with a method-channel mock cleaned up in teardown or a fake platform interface, routes the Kotlin implementation to a native JUnit test without inventing Gradle paths, and states which platforms stay unverified.",
-      "files": [
-        "fixture/shop_app"
-      ],
-      "assertions": [
-        "Explains MissingPluginException as no platform implementation registered in the host test VM",
-        "Tests the Dart API via a method-channel mock cleaned up in teardown, or via a fake platform interface",
-        "Routes Kotlin implementation testing to native JUnit/Gradle without inventing paths or scheme names as verified facts",
-        "States which platforms or layers remain unverified",
-        "Checks that the pinned SDK is installed (e.g. `fvm list`) before any wrapper call, does not trigger an SDK download, and reports any global-SDK run as not pinned-SDK verification"
-      ]
-    },
-    {
-      "id": 6,
       "name": "diagnose-ci-only-failure",
       "prompt": "CI is red: test/session_flaky_test.dart 'first session id is 1' fails with Expected: <1> Actual: <2>. Passes on my machine. The CI log says 'Shuffling test order with --test-randomize-ordering-seed=3141592653'. Why?",
       "expected_workflow": "diagnose",
@@ -101,9 +71,9 @@
       ]
     },
     {
-      "id": 7,
+      "id": 5,
       "name": "review-existing-tests",
-      "prompt": "Review the tests in shop_app's test/ and integration_test/ folders and tell me what's weak. Don't change anything.",
+      "prompt": "Review the tests in shop_app's test/ folder and tell me what's weak. Don't change anything.",
       "expected_workflow": "review",
       "expected_output": "Read-only review ranked by risk with file and line references: shared mutable state, hidden sleep, thin pricing assertions, pumpAndSettle on app.main(), golden fonts. Does not edit files or apply creation-only steps. Distinguishes evidence from inference.",
       "files": [
@@ -113,14 +83,14 @@
         "Does not modify any files in the project copy",
         "Flags shared mutable state in session_flaky_test.dart",
         "Flags the real-time delay in 'token expires after 1s'",
-        "Flags at least two of: thin pricing coverage, pumpAndSettle on app.main(), brittle integration assertion, golden font reliance",
+        "Flags at least two of: thin pricing coverage, pumpAndSettle on app.main(), golden font reliance",
         "Ranks findings by risk and distinguishes evidence from inference",
         "Checks that the pinned SDK is installed (e.g. `fvm list`) before any wrapper call, does not trigger an SDK download, and reports any global-SDK run as not pinned-SDK verification",
         "Reports the cause or findings and offers a fix without editing any project file, since the user asked only why or what is weak"
       ]
     },
     {
-      "id": 8,
+      "id": 6,
       "name": "stabilize-flaky-timing-test",
       "prompt": "'token expires after 1s' in test/session_flaky_test.dart fails about 1 in 20 runs in CI. Make it stable.",
       "expected_workflow": "stabilize",
