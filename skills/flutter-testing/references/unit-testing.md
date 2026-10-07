@@ -9,8 +9,13 @@ dependencies can be controlled in-process.
   binding.
 - Use the SDK's `flutter_test` when the code imports Flutter or needs Flutter
   test bindings.
-- Place ordinary tests under `test/` with names ending in `_test.dart`. Mirror
-  the production layout when the repository already does so.
+- Place ordinary tests under the owning package's `test/` directory with names
+  ending in `_test.dart`. When no tests exist, create only the paths needed for
+  the requested tests and mirror their paths under `lib/`. In a monorepo, keep
+  each test with its package; create a root `test/` only when the root is itself
+  a Dart or Flutter package.
+- Add shared fixtures, fakes, or helpers when the first concrete reuse appears,
+  following an established project location when one exists.
 - Discover project-specific flags from CI and `dart test --help` or
   `flutter test --help`; do not transplant flags from another SDK version.
 
@@ -23,6 +28,23 @@ dependencies can be controlled in-process.
    domain error. Verify calls only when making the call is itself the contract.
 5. For a regression, run the focused test before the fix and confirm it fails
    for the reported bug rather than setup, compilation, or an unrelated error.
+
+## Uncovered Functions
+
+Before changing an existing function, search the relevant test suite for direct
+and indirect coverage of the behavior that will change. Use an existing
+coverage report when available, but do not require one when test code and
+execution establish the answer.
+
+When the behavior is uncovered, pause before modifying production code. Tell
+the user the function and behavior at risk, recommend the smallest
+characterization or regression test, and ask them to confirm one path:
+
+1. Add and observe the focused test before modifying the function.
+2. Modify without coverage and accept the stated regression risk.
+
+Treat the user's answer to that choice as confirmation. A prior request to
+change the function does not select a path.
 
 ## Control Dependencies
 

@@ -22,6 +22,13 @@ Standard SDK tests normally live under `integration_test/`, initialize
 `flutter_test` APIs. Treat the host machine and target device as separate even
 when web or desktop runs both roles on one machine.
 
+When `integration_test/` does not exist, create the narrowest tree for the
+requested flow. Follow package and feature boundaries from the application,
+but organize tests by user journey rather than copying presentation, data, and
+domain layers. Add support, fixture, or robot directories only when creating a
+concrete reusable helper. Select the app bootstrap or test seam from repository
+usage and configuration, not from a plausible filename.
+
 ## Make the Flow Deterministic
 
 1. Start from explicit app, authentication, storage, and backend state.

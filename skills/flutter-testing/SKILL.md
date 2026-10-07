@@ -1,5 +1,5 @@
 ---
-version: "1.0.0"
+version: "1.0.2"
 name: flutter-testing
 description: Use when creating, running, diagnosing, reviewing, or stabilizing Flutter or Dart unit tests and Flutter application-level integration tests.
 ---
@@ -23,9 +23,14 @@ testing convention.
      [references/integration-testing.md](references/integration-testing.md).
    - For ambiguous terms, use [GLOSSARY.md](GLOSSARY.md).
 3. Define the behavior and the production change that would make the test fail.
-   For a bug fix, add a regression test and observe the expected failure before
-   changing production behavior. For a feature, follow the user's requested
-   development order.
+   Before modifying an existing function, identify tests that exercise the
+   behavior being changed. If none do, stop before editing production code,
+   name the uncovered function and behavior, propose the focused test, and ask
+   the user to confirm either test-first modification or proceeding without
+   coverage. The original change request is not that confirmation.
+   Follow the confirmed path. On the test-first path for a bug fix, add a
+   regression test and observe the expected failure before changing production
+   behavior. For a feature, follow the user's requested development order.
 4. Implement the narrowest test and any minimal, behavior-preserving testability
    seam. Prefer existing dependencies and conventions. Introduce a package,
    native harness, test service, or CI/device configuration only when it is
