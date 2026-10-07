@@ -1,5 +1,5 @@
 ---
-version: "1.0.2"
+version: "1.0.3"
 name: flutter-testing
 description: Use when creating, running, diagnosing, reviewing, or stabilizing Flutter or Dart unit tests and Flutter application-level integration tests.
 ---
@@ -26,8 +26,8 @@ testing convention.
    Before modifying an existing function, identify tests that exercise the
    behavior being changed. If none do, stop before editing production code,
    name the uncovered function and behavior, propose the focused test, and ask
-   the user to confirm either test-first modification or proceeding without
-   coverage. The original change request is not that confirmation.
+   the user to choose a path using the decision format below. The original
+   change request is not that confirmation.
    Follow the confirmed path. On the test-first path for a bug fix, add a
    regression test and observe the expected failure before changing production
    behavior. For a feature, follow the user's requested development order.
@@ -40,6 +40,13 @@ testing convention.
    integration test on the same explicit target and device used by the project.
    If a required device, service, credential, or platform is unavailable, report
    that verification as incomplete.
+
+## Decision Prompts
+
+Whenever user input is required, present at least three concrete, mutually
+exclusive options. Put the recommended option first, label it **Recommended**,
+and explain why it best fits the known constraints. Give every option one short
+sentence describing its impact or tradeoff.
 
 ## Decision Guide
 

@@ -40,8 +40,12 @@ When the behavior is uncovered, pause before modifying production code. Tell
 the user the function and behavior at risk, recommend the smallest
 characterization or regression test, and ask them to confirm one path:
 
-1. Add and observe the focused test before modifying the function.
-2. Modify without coverage and accept the stated regression risk.
+1. **Add the focused test first — Recommended.** Observe the expected failure
+   before modifying the function; this proves the test protects the behavior.
+2. **Investigate testability first.** Pause the production change and determine
+   the smallest seam or dependency change needed for reliable coverage.
+3. **Proceed without coverage.** Modify the function now and explicitly accept
+   the stated regression risk.
 
 Treat the user's answer to that choice as confirmation. A prior request to
 change the function does not select a path.
