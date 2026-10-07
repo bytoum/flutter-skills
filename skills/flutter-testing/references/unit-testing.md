@@ -22,33 +22,32 @@ dependencies can be controlled in-process.
 ## Design the Test
 
 1. Name one observable behavior, boundary, or error case.
-2. Identify the production change that would make the assertion fail.
-3. Arrange only the state needed for that behavior.
-4. Act once and assert the returned value, emitted state, persisted result, or
+2. Choose cases by risk: the happy path, the boundaries where the behavior
+   changes, errors the contract exposes, and the regression condition. Skip
+   cases that cannot change the outcome; a universal checklist adds noise.
+3. Identify the production change that would make the assertion fail.
+4. Arrange only the state needed for that behavior.
+5. Act once and assert the returned value, emitted state, persisted result, or
    domain error. Verify calls only when making the call is itself the contract.
-5. For a regression, run the focused test before the fix and confirm it fails
+6. For a regression, run the focused test before the fix and confirm it fails
    for the reported bug rather than setup, compilation, or an unrelated error.
+
+When relevant to the behavior, consider empty and malformed input, numeric
+limits, Unicode and grapheme boundaries, timezone and DST transitions (use
+explicit UTC instants unless timezone is the subject), and seeded randomness.
 
 ## Uncovered Functions
 
-Before changing an existing function, search the relevant test suite for direct
-and indirect coverage of the behavior that will change. Use an existing
-coverage report when available, but do not require one when test code and
-execution establish the answer.
+Before changing an existing function, search the relevant tests for direct and
+indirect coverage of the behavior that will change. Use an existing coverage
+report when available, but do not require one when test code and execution
+establish the answer.
 
-When the behavior is uncovered, pause before modifying production code. Tell
-the user the function and behavior at risk, recommend the smallest
-characterization or regression test, and ask them to confirm one path:
-
-1. **Add the focused test first — Recommended.** Observe the expected failure
-   before modifying the function; this proves the test protects the behavior.
-2. **Investigate testability first.** Pause the production change and determine
-   the smallest seam or dependency change needed for reliable coverage.
-3. **Proceed without coverage.** Modify the function now and explicitly accept
-   the stated regression risk.
-
-Treat the user's answer to that choice as confirmation. A prior request to
-change the function does not select a path.
+When the behavior is uncovered and testing is in scope, add the smallest
+characterization or regression test by default and, for a bug fix, observe it
+fail before changing the function. No permission is needed for that. Ask only
+when reliable coverage needs a material seam, new dependency, harness, service,
+device, credential, or CI change, and state the options with a recommendation.
 
 ## Control Dependencies
 
@@ -63,17 +62,32 @@ instants when timezone behavior is not under test. For plugin-backed code,
 prefer wrapping the plugin behind an application-owned interface; mock platform
 interfaces or channels only when a higher boundary is unavailable.
 
-When the project uses generated Mockito mocks, update the annotated source and
-run its established `build_runner` command. Treat generated `*.mocks.dart`
-files as outputs.
+When the project uses generated code (Mockito `*.mocks.dart`, `freezed`,
+`json_serializable`, or another generator), change the annotated source and run
+the repository's established generation command, not a guessed one. Treat
+generated files as outputs; never hand-edit them, and regenerate stale ones
+before diagnosing a failure. In a monorepo, follow the repository's package
+generation order.
+
+When the code uses Bloc, Riverpod, Provider, or a custom state machine, keep
+the project's existing test layer (for example `bloc_test`, a `ProviderContainer`
+with overrides) and assert emitted domain or UI state rather than framework
+internals.
 
 ## Async and Isolation
 
 - Await the behavior the test owns; expose an explicit readiness future instead
   of sleeping.
-- Use controlled clocks or `fake_async` when the project already supports them
-  and timer behavior is the subject.
-- Restore mutated globals, bindings, and temporary resources in teardown.
+- Streams: collect with `expectLater(stream, emitsInOrder([...]))` or
+  `emitsDone`, and assert the terminal state (done or error), not only the first
+  event. Cancel subscriptions you open.
+- Cancellation, debounce, and concurrency: use controlled clocks or
+  `fake_async` when the project supports them and timing is the subject. Start
+  overlapping operations explicitly and assert the outcome, not the schedule.
+- Isolates: await completion and shut down owned isolates in teardown so no
+  work outlives the test.
+- Restore mutated globals, bindings, and temporary resources (files, ports) in
+  teardown, and make sure no timer or future is left pending.
 - Use a recorded randomization seed to reproduce order dependence. Fix shared
   state before changing concurrency, timeouts, or retry counts.
 

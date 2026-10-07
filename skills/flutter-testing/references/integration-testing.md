@@ -29,6 +29,13 @@ domain layers. Add support, fixture, or robot directories only when creating a
 concrete reusable helper. Select the app bootstrap or test seam from repository
 usage and configuration, not from a plausible filename.
 
+Resolve flavors, `--dart-define` values, alternate entrypoints (`-t`), package
+IDs, and permissions from repository scripts and CI rather than inventing flags.
+
+If the project uses the legacy `flutter_driver` harness, preserve it for scoped
+maintenance or propose a separate migration to `integration_test`. Do not mix
+the two harnesses silently.
+
 ## Make the Flow Deterministic
 
 1. Start from explicit app, authentication, storage, and backend state.
@@ -41,6 +48,12 @@ usage and configuration, not from a plausible filename.
    continuous animations and should not replace a known readiness signal.
 5. On failure, retain the useful artifacts already supported by the project,
    such as logs, screenshots, traces, and the device identifier.
+
+Cover flows that break in practice when they matter to the request: navigation
+and deep links, state restoration, background and resume, persisted state,
+offline behavior, latency, timeouts, retries, malformed responses, and
+interrupted operations. Drive network behavior through a controlled fake, and
+assert the user-visible or domain outcome.
 
 Retries, longer sleeps, and larger timeouts may help reproduce a failure, but a
 stable fix isolates shared state, real time, live network, animations, and
@@ -68,16 +81,33 @@ mobile or desktop target is:
 flutter test integration_test/checkout_test.dart -d <device-id>
 ```
 
-Web driver setup and commands are especially version-sensitive; follow the
-project's checked-in runner and current Flutter documentation rather than
-hardcoding a ChromeDriver workflow. Confirm supported syntax with local command
-help.
+Use the project's wrapper in place of `flutter`, and report the exact target:
+
+- Mobile: the named simulator, emulator, or physical device ID.
+- Web: the specific browser and driver setup. This is especially
+  version-sensitive; follow the project's checked-in runner and current Flutter
+  documentation rather than hardcoding a ChromeDriver workflow.
+- macOS, Windows, Linux: the desktop OS. Linux needs a display server (a real
+  one or a virtual one such as Xvfb); use the project's CI approach.
+- Device farms: use the checked-in job; do not invent a farm configuration.
 
 Run the narrow flow first, then the relevant integration directory or CI job on
 the same platform and explicit device. Choose repeated runs in proportion to
 the flake's frequency and risk; repetition can expose nondeterminism but does
 not replace removing its cause. Report unavailable targets or services as
-unverified.
+unverified, and do not generalize one target's result to others.
+
+## Performance and Artifacts
+
+A functional pass is not performance evidence. For startup, scrolling, or frame
+regressions, use the project's supported profiling workflow: profile mode on a
+real device, with `IntegrationTestWidgetsFlutterBinding.traceAction` and
+`reportData`, or the project's existing measurement script. Say when a platform
+does not support the requested measurement.
+
+Keep the artifacts the project already writes (screenshots via the binding,
+timeline traces, logs, `reportData` JSON, machine-readable results) and report
+where each was saved.
 
 ## Official References
 
