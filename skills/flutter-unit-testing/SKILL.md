@@ -170,12 +170,19 @@ If the project uses code generation (mockito, Retrofit, json_serializable, freez
 
 When a test fails:
 - Read the failure carefully. Distinguish "the test is wrong" (bad stub, missing `await`, wrong expectation) from "the code is wrong".
-- **Never weaken an assertion just to make it pass.** If the test reveals a real bug, leave the test failing (or mark it with `skip: 'Reveals bug: ...'`) and report the bug to the user. Only change production code if the user asked you to.
+- **Never weaken an assertion just to make it pass.** Only change production code if the user asked you to.
+- **Never skip, disable, or delete a failing test** to get a green run. That means no `skip:`, `markTestSkipped`, commented-out tests, `@Skip`, or `--exclude-tags`/`--plain-name` filters used to hide it. A skipped test reads as a passing suite and buries the problem.
+- If you cannot fix a failure by correcting the test itself (the test is the wrong part), **stop**. Do not continue writing more tests or work around it. Leave the failing test in place and report to the user:
+  1. **Which test failed**: file, test name, and the expected vs actual output.
+  2. **Why**: your diagnosis, and whether it is a production bug, a missing dependency or codegen problem, an environment limit, or something you could not determine.
+  3. **Options to resolve**, each with its trade-off, for example: fix the production code (show the change), adjust the expectation if the current behavior is actually intended, add or change a dependency, or refactor for testability. Mark the one you recommend.
+  Then wait for the user's choice.
+- The same applies when tests cannot compile or run (a dependency that won't resolve, failing codegen, an incompatible SDK): stop, give the reason and the options, and don't substitute a different testing approach without the user's agreement.
 - If you can't run `flutter test` in the current environment, say so clearly and tell the user the exact command to run.
 
 ### 9. Report back
 
-Briefly tell the user: which file(s) you created, what behaviors are covered (a short list), the test run result, and anything you couldn't test cleanly and why (e.g. hard-coded `DateTime.now()`, static singletons, untestable platform calls) with a suggested refactor.
+Briefly tell the user: which file(s) you created, what behaviors are covered (a short list), the test run result (counts of passed and failed; a report must never list skipped tests as a way of passing), and anything you couldn't test cleanly and why (e.g. hard-coded `DateTime.now()`, static singletons, untestable platform calls) with a suggested refactor.
 
 ## Things that make tests bad (avoid)
 

@@ -65,4 +65,4 @@ test('all dependencies resolve', () async {
 });
 ```
 
-Register real network/storage modules under a `prod` environment and fakes under `test`, so this test stays offline. If the project's modules can't run offline, skip this test and say why.
+Register real network/storage modules under a `prod` environment and fakes under `test`, so this test stays offline. If the project's modules can't run offline, don't skip or drop this test. Stop and report why, with options (for example, register fakes for those modules under `test`, or leave the DI-graph test out with the user's agreement), then wait for the user's choice.
