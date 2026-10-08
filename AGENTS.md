@@ -28,7 +28,6 @@ When adding or updating a skill:
 
    ```yaml
    ---
-   version: "1.0.0"
    name: example-skill
    description: Explain what the skill does and when it should be used.
    ---

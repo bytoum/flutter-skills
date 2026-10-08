@@ -9,6 +9,7 @@ portable set of instructions stored in its own directory under `skills/`.
 | --- | --- |
 | [`flutter-analyze`](skills/flutter-analyze/SKILL.md) | Diagnose and resolve Flutter and Dart analyzer findings while preserving intended behavior and the project's analysis policy. |
 | [`flutter-testing`](skills/flutter-testing/SKILL.md) | Create, run, diagnose, review, and stabilize Flutter and Dart unit, widget, and golden tests; ask before changing uncovered production behavior. |
+| [`flutter-unit-testing`](skills/flutter-unit-testing/SKILL.md) | Write, run, and fix Flutter and Dart unit tests for pure logic, async code, and state-management units with deterministic test doubles. |
 | [`roll-dice`](skills/roll-dice/SKILL.md) | Generate random dice rolls with shell or PowerShell commands. |
 
 ## Install a skill
